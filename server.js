@@ -56,6 +56,11 @@ function start() {
                 case 'Update an employee role':
                     addEmployeeRole();
                     break;
+                case 'Exit':
+                    db.exit;
+                    console.log("Bye!")
+                    break;
+
 
             }
         });
@@ -90,6 +95,14 @@ function viewEmployees() {
         start();
     });
 }
+
+// add a department
+
+// add a role
+
+// add an employee
+
+// exit
 
 app.use((req, res) => {
     res.status(404).end();
