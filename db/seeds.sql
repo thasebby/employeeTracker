@@ -4,7 +4,7 @@ VALUES  ("Development Team"),
         ("Human Resources"),
         ("Finance");
 
-INSERT INTO workRole(name,role_salary,department_id)
+INSERT INTO workRole(role_name,role_salary,department_id)
 VALUES  ("Front-End Web Developer",105000,1),
         ("Product Manager",220000,1),
         ("Marketing Manager",118000,2),
@@ -24,4 +24,5 @@ VALUES  ('John','Smith',1),
         ('Sophia','Taylor',6),
         ('Christopher','Martinez',7),
         ('Olivia','Anderson',8);
+
 
