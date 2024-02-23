@@ -10,7 +10,7 @@ CREATE TABLE department(
 
 CREATE TABLE workRole(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
+    role_name VARCHAR(30) NOT NULL,
     role_salary INT NOT NULL,
     department_id INT ,
     FOREIGN KEY (department_id)
@@ -23,7 +23,7 @@ CREATE TABLE employee(
         first_name VARCHAR(30),
         last_name VARCHAR(30),
         role_id INT,
-        -- manager_id INT NOT NULL,
+        -- manager_id INT,
         FOREIGN KEY (role_id)
         REFERENCES workRole(id)
         ON DELETE SET NULL
