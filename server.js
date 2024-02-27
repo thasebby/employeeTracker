@@ -140,14 +140,14 @@ function addRole() {
             ])
             .then((answer) => {
                 const department = res.find(
-                    (department) => department.name === answer.department
+                    (department) => department.name === answer.roleDepartment
                 );
                 const insert = "INSERT INTO workRole SET ?";
                 db.query(insert,
                     {
                         role_name: answer.roleName,
                         role_salary: answer.roleSalary,
-                        department_id: department,
+                        department_id: department.id,
                     },
                     (err,res) => {
                         console.log (`Added the ${answer.roleName} role into the ${answer.roleDepartment} department`);
@@ -156,7 +156,6 @@ function addRole() {
                     }
                 );
             });
-            if (err) throw err;
     });
 }
 
