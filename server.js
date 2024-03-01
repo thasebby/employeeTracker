@@ -88,7 +88,7 @@ function viewRoles() {
 
 //view all employees
 function viewEmployees() {
-    const select = 'SELECT employee.id,employee.first_name,employee.last_name,workRole.role_name,department.name,workRole.role_salary FROM employee LEFT JOIN workRole ON employee.role_id =workRole.id LEFT JOIN department ON workRole.department_id = department.id';
+    const select = 'SELECT employee.id,employee.first_name,employee.last_name,workRole.role_name,department.name,workRole.role_salary,employee.manager_id FROM employee LEFT JOIN workRole ON employee.role_id =workRole.id LEFT JOIN department ON workRole.department_id = department.id';
     db.query(select, (err, res) => {
         console.table(res);
         if (err) throw err;
@@ -149,8 +149,8 @@ function addRole() {
                         role_salary: answer.roleSalary,
                         department_id: department.id,
                     },
-                    (err,res) => {
-                        console.log (`Added the ${answer.roleName} role into the ${answer.roleDepartment} department`);
+                    (err, res) => {
+                        console.log(`Added the ${answer.roleName} role into the ${answer.roleDepartment} department`);
                         if (err) throw err;
                         start();
                     }
@@ -159,7 +159,59 @@ function addRole() {
     });
 }
 
-// add an employee
+// add an employee: first name, last name, role, and manager
+function addEmployee() {
+    db.query("SELECT id,role_name FROM workRole", (err, res) => {
+        const role = res.map(({ id, role_name }) => ({
+            name: role_name,
+            value: id,
+        }));
+        if (err) throw err;
+
+        db.query(
+            'SELECT id,CONCAT (first_name, " ", last_name) AS manager_name FROM employee WHERE manager_id != 0', (err, res) => {
+                const manager = res.map(({ id, manager_name }) => ({
+                    name: manager_name,
+                    value: id,
+                }));
+
+            inquirer
+                .prompt([
+                    {
+                        type: "input",
+                        name: "first_name",
+                        message: "Enter the employee's first name:",
+                    },
+                    {
+                        type: "input",
+                        name: "last_name",
+                        message: "Enter the employee's last name:",
+                    },
+                    {
+                        type: "list",
+                        name: "role_id",
+                        message: "What is the employee's role:",
+                        choices: role,
+                    },
+                    {
+                        type: "list",
+                        name: "manager_id",
+                        message: "Who is this employee's manager?:",
+                        choices: manager,
+                    },
+                ])
+                .then((answer) => {
+                    console.log(answer);
+                    db.query(`INSERT INTO employee(first_name,last_name,role_id,manager_id) VALUES ('${answer.first_name}','${answer.last_name}',${answer.role_id},${answer.manager_id})`, (err) => {
+                        console.log("New employee addedd success");
+                        if (err) throw err;
+                        start();
+                    })
+                });
+            }
+        )
+    })
+}
 
 app.use((req, res) => {
     res.status(404).end();

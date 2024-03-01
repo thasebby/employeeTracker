@@ -15,14 +15,14 @@ VALUES  ("Front-End Web Developer",105000,1),
         ("Internal Auditor",90000,4);   
 
 -- REMEMBER TO ADD THE MANAGER ID WHEN YOU GET A CHANCE NULL IF THEY ARE MANAGER AND ASSIGNED TO THEIR MANAGER IF THEY AREN'T
-INSERT INTO employee(first_name,last_name,role_id)
-VALUES  ('John','Smith',1),
-        ('Emily','Johnson',2),
-        ('Michael','Brown',3),
-        ('Jennifer','Davis',4),
-        ('David','Wilson',5),
-        ('Sophia','Taylor',6),
-        ('Christopher','Martinez',7),
-        ('Olivia','Anderson',8);
+INSERT INTO employee(first_name,last_name,role_id,manager_id)
+VALUES  ('John','Smith',1,0),
+        ('Emily','Johnson',2,1),
+        ('Michael','Brown',3,2),
+        ('Jennifer','Davis',4,0),
+        ('David','Wilson',5,3),
+        ('Sophia','Taylor',6,0),
+        ('Christopher','Martinez',7,4),
+        ('Olivia','Anderson',8,0);
 
 
