@@ -54,7 +54,7 @@ function start() {
                     addEmployee();
                     break;
                 case 'Update an employee role':
-                    addEmployeeRole();
+                    updateEmployeeRole();
                     break;
                 case 'Exit':
                     db.exit;
@@ -175,49 +175,100 @@ function addEmployee() {
                     value: id,
                 }));
 
-            inquirer
-                .prompt([
-                    {
-                        type: "input",
-                        name: "first_name",
-                        message: "Enter the employee's first name:",
-                    },
-                    {
-                        type: "input",
-                        name: "last_name",
-                        message: "Enter the employee's last name:",
-                    },
-                    {
-                        type: "list",
-                        name: "role_id",
-                        message: "What is the employee's role:",
-                        choices: role,
-                    },
-                    {
-                        type: "list",
-                        name: "manager_id",
-                        message: "Who is this employee's manager?:",
-                        choices: manager,
-                    },
-                ])
-                .then((answer) => {
-                    console.log(answer);
-                    db.query(`INSERT INTO employee(first_name,last_name,role_id,manager_id) VALUES ('${answer.first_name}','${answer.last_name}',${answer.role_id},${answer.manager_id})`, (err) => {
-                        console.log("New employee addedd success");
-                        if (err) throw err;
-                        start();
-                    })
-                });
+                inquirer
+                    .prompt([
+                        {
+                            type: "input",
+                            name: "first_name",
+                            message: "Enter the employee's first name:",
+                        },
+                        {
+                            type: "input",
+                            name: "last_name",
+                            message: "Enter the employee's last name:",
+                        },
+                        {
+                            type: "list",
+                            name: "role_id",
+                            message: "What is the employee's role:",
+                            choices: role,
+                        },
+                        {
+                            type: "list",
+                            name: "manager_id",
+                            message: "Who is this employee's manager?:",
+                            choices: manager,
+                        },
+                    ])
+                    .then((answer) => {
+                        console.log(answer);
+                        db.query(`INSERT INTO employee(first_name,last_name,role_id,manager_id) VALUES ('${answer.first_name}','${answer.last_name}',${answer.role_id},${answer.manager_id})`, (err) => {
+                            console.log("New employee addedd success");
+                            if (err) throw err;
+                            start();
+                        })
+                    });
             }
         )
     })
 }
 
+//update employee role: prompt to select an employee and then prompted to update their role
+function updateEmployeeRole() {
+    db.query('SELECT id, CONCAT (first_name, " ", last_name) AS employee_list FROM employee', (err, res) => {
+        if (err) throw err;
+        const employees = res.map(({ id, employee_list }) => ({
+            name: employee_list,
+            value: id,
+        }));
+
+        db.query('SELECT id,role_name FROM workRole', (err, res) => {
+            if (err) throw err;
+            const role = res.map(({ id, role_name }) => ({
+                name: role_name,
+                value: id,
+            }));
+            inquirer
+                .prompt([
+                    {
+                        type: "list",
+                        name: "employeeList",
+                        message: "Select the employee to update:",
+                        choices: employees,
+                    },
+                    {
+                        type: "list",
+                        name:"roleList",
+                        message:"Select their new role:",
+                        choices: role,
+                    },
+                ])
+                .then((answer) => {
+                    const selectedEmployee = employees.find(
+                        (employee) => employee.value === answer.employeeList
+                    );
+                    const selectedRole = role.find(
+                        (role) => role.value === answer.roleList
+                    );
+                    const update = "UPDATE employee SET role_id = ? WHERE id = ?";
+                    db.query(update, [selectedRole.value, selectedEmployee.value], (err,res) => {
+                        if (err) throw err;
+                        console.log(`${selectedEmployee.name}'s new role is ${selectedRole.name}`);
+                        start();
+                    })
+
+
+                })
+        })
+    })
+
+}
+
 app.use((req, res) => {
-    res.status(404).end();
-})
+        res.status(404).end();
+    })
 
 app.listen(PORT, () => {
-    console.log(`server running on port ${PORT}`);
-    start();
-});
+        console.log(`server running on port ${PORT}`);
+        start();
+    });
