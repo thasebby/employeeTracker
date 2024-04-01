@@ -11,3 +11,6 @@ This program was created to build a database of workers and their correspondeing
 
 ## Links
 - [GitHub repo](https://github.com/thasebby/employeeTracker.git)
+
+## Video Link
+- [Employee Tracker Walkthrough](https://youtu.be/HqcIheXEOO4)
